@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import './Counter.css'
 
 const Counter = () => {
+
     const [count, setCount] = useState(0);
 
     useEffect(() => {
         let oldCount = JSON.parse(localStorage.getItem('count'));
-        setCount(oldCount);
-
-    }, [])
+        if(oldCount != 0){
+            setCount(oldCount);
+        }
+    },[])
 
     useEffect(() => {
-        if (count != 0) {
-            localStorage.setItem('count', count)
-        }
-    }, [count])
+        localStorage.setItem('count', JSON.stringify(count));
+    }, [count]);
 
     const handleIncrement = () => {
         setCount((count) => count + 1);
@@ -24,13 +23,12 @@ const Counter = () => {
         setCount((count) => count - 1);
     }
 
+
     return (
         <>
-            <div className="card">
-                <h2>Count is: {count}</h2>
-                <button type='button' onClick={handleIncrement}>Increment</button>
-                <button type='button' onClick={handleDecrement}>Decrement</button>
-            </div>
+            <h2>Counter: {count}</h2>
+            <button onClick={handleIncrement}>Increment</button>
+            <button onClick={handleDecrement}>Decrement</button>
         </>
     )
 }
