@@ -44,6 +44,7 @@ const Employee = () => {
                                 <label htmlFor="salary" className="form-label">Employee Salary</label>
                                 <input type="number" value={emp.salary || ""} name='salary' onChange={handleInput} className="form-control" id="salary" />
                             </div>
+                            
                             <button type="submit" className="btn btn-primary">Submit</button>
                         </form>
                     </div>
