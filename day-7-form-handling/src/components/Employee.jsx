@@ -1,22 +1,33 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 const Employee = () => {
 
-    const [emp,setEmp] = useState({});
-    const [list,setList] = useState([]);
+    const [emp, setEmp] = useState({});
+    const [list, setList] = useState([]);
+
+
+    useEffect(() => {
+        const savedData = JSON.parse(localStorage.getItem("employees"));
+        if (savedData) {
+            setList(savedData);
+        }
+    }, []);
 
     const handleInput = (e) => {
-        const {name,value} = e.target;
-        setEmp({...emp,[name]:value})   
+        const { name, value } = e.target;
+        setEmp({ ...emp, [name]: value })
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setList([...list, {...emp, id:Date.now()}]);
-        e.target.reset();
+        const newList = [...list, { ...emp, id: Date.now() }];
+        setList(newList);
+
+        localStorage.setItem("employees", JSON.stringify(newList));
+
         
     }
-    console.log(list);
+
 
     return (
         <>
@@ -26,13 +37,12 @@ const Employee = () => {
                         <form method='post' onSubmit={handleSubmit}>
                             <h2>Employee Data</h2>
                             <div className="mb-3">
-                                <label htmlFor="employeeName" className="form-label">Email address</label>
-                                <input type="text" name='ename' onChange={handleInput} className="form-control" id="employeeName" aria-describedby="emailHelp" />
-                              
+                                <label htmlFor="employeeName" className="form-label">Employee Name</label>
+                                <input type="text" value={emp.ename || ""} name='ename' onChange={handleInput} className="form-control" id="employeeName" />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="salary" className="form-label">Employee Salary</label>
-                                <input type="number" name='salary' onChange={handleInput} className="form-control" id="salary" />
+                                <input type="number" value={emp.salary || ""} name='salary' onChange={handleInput} className="form-control" id="salary" />
                             </div>
                             <button type="submit" className="btn btn-primary">Submit</button>
                         </form>
@@ -57,28 +67,26 @@ const Employee = () => {
 
                             <tbody>
                                 {
-                                    list.length != 0 ?
+                                    list.length !== 0 ?
 
-                                    list.map((employee,index)=>{
-                                        const {id,ename,salary} = employee
-                                        return (
-                                            <>
-                                                <tr>
-                                                <td>{index + 1}</td>
-                                                <td>{ename}</td>
-                                                <td>{salary}</td>
-                                                <td className='d-flex justify-content-evenly'>
-                                                    <button className="btn btn-danger">Delete</button>
-                                                    <button className="btn btn-warning">Edit</button>
-                                                </td>
+                                        list.map((employee, index) => {
+                                            const { id, ename, salary } = employee;
+                                            return (
+                                                <tr key={id}>
+                                                    <td>{index + 1}</td>
+                                                    <td>{ename}</td>
+                                                    <td>{salary}</td>
+                                                    <td className='d-flex justify-content-evenly'>
+                                                        <button className="btn btn-danger">Delete</button>
+                                                        <button className="btn btn-warning">Edit</button>
+                                                    </td>
                                                 </tr>
-                                            </>
-                                        )
-                                    })
-                                    : 
-                                    <tr>
-                                        <td colSpan={4} className='text-center'>No Data Found</td>
-                                    </tr>
+                                            )
+                                        })
+                                        :
+                                        <tr>
+                                            <td colSpan={4} className='text-center'>No Data Found</td>
+                                        </tr>
                                 }
                             </tbody>
                         </table>
@@ -89,4 +97,4 @@ const Employee = () => {
     )
 }
 
-export default Employee
+export default Employee;
