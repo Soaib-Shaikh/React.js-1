@@ -1,10 +1,23 @@
-import React, { use, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 
 const App = () => {
 
   const [user, setUser] = useState({});
   const [hobby, setHobby] = useState([]);
   const [list, setList] = useState([]);
+  const [mount, setMount] = useState(false);
+
+  useEffect(()=>{
+      let newUser = JSON.parse(localStorage.getItem('list'))
+      setList(newUser); 
+      setMount(true)
+  },[])
+
+  useEffect(()=>{
+      if(mount){
+        localStorage.setItem('list', JSON.stringify(list))
+      }
+  },[list])
 
   const cities=['Navsari', 'Surat', 'Vadodara', 'Ahmedabad', 'Rajkot'];
 
@@ -29,7 +42,7 @@ const App = () => {
   const handleSubmit = (e) => {
       e.preventDefault();
 
-      setList([...list, {user, id: Date.now()}]);
+      setList([...list, {...user, id: Date.now()}]);
       setUser({});
       setHobby([]);
   }
@@ -37,6 +50,11 @@ const App = () => {
   const handleReset = () => {
         setUser({});
         setHobby([]);
+  }
+
+  const handleDelete = (id) => {
+    let data = list.filter(val => val.id != id);
+    setList(data);
   }
 
   console.log(list);
@@ -116,6 +134,57 @@ const App = () => {
               <button type="submit" className='btn btn-outline-primary me-3'>Submit</button>
               <button type="button" onClick={handleReset} className='btn btn-outline-secondary'>Reset</button>
             </form>
+          </div>
+        </div>
+
+        <div className="row justify-content-center mt-5">
+          <div className="col-md=1010">
+            <table className='table table-striped table-bordered table-hover table-responsive text-center caption-top'>
+                  <caption><h2>User Data</h2></caption>
+
+                  <thead>
+                    <tr>
+                      <th>Sr.No</th>
+                      <th>Username</th>
+                      <th>Email</th>
+                      <th>Password</th>
+                      <th>Gender</th>
+                      <th>Hobby</th>
+                      <th>City</th>
+                      <th>Address</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {
+                      list.length > 0 ? 
+                      
+                      list.map((val,index)=>(
+                        <tr>
+                          <td>{index + 1}</td>
+                          <td>{val.username}</td>
+                          <td>{val.email}</td>
+                          <td>{val.password}</td>
+                          <td>{val.gender}</td>
+                          <td>{val.hobby}</td>
+                          <td>{val.city}</td>
+                          <td>{val.address}</td>
+                          <td>
+                            <button className='btn btn-outline-danger me-3' onClick={()=> handleDelete(val.id)}>Delete</button>
+                            <button className='btn btn-outline-warning'>Edit</button>
+                          </td>
+                        </tr>
+                      ))
+                      
+                      :
+
+                      <tr>
+                        <td colSpan={9}>Data Not Found.</td>
+                      </tr>
+                    }
+                  </tbody>
+            </table>
           </div>
         </div>
       </div>
