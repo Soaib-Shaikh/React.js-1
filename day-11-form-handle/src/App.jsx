@@ -6,7 +6,7 @@ const App = () => {
   const [hobby, setHobby] = useState([]);
   const [list, setList] = useState([]);
   const [mount, setMount] = useState(false);
-  const [search, setSearch] = useState([]);
+  
 
   useEffect(() => {
     let newUser = JSON.parse(localStorage.getItem('list'))
@@ -23,7 +23,7 @@ const App = () => {
   useEffect(()=>{
     let newUser = JSON.parse(localStorage.getItem('list'));
     setList(newUser);
-    setSearch(newUser);
+   
     setMount(true);
   },[])
 
@@ -65,15 +65,7 @@ const App = () => {
     setList(data);
   }
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    let val = e.target.value.toLowerCase();;
-
-    let newList = list.filter(value => {
-      value.username.toLowerCase().includes(val);
-    })
-    setList(newList)
-  }
+  
 
 
   return (
